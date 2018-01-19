@@ -14,11 +14,20 @@ import math
 
 from   libs              import git_info
 
+def plot_lonely_cube(cube, *args, **kw):
+    cf = plot_cube(cube, None,  None, None, *args, **kw)
+    colorbar = plt.colorbar(cf, colorbar_axes, orientation='horizontal')
+    colorbar_axes = plt.gcf().add_axes([0.15, 0.7, 0.15])
+    return cf
 
+def plot_cube(cube, N, M, n, cmap, levels, extend = 'neither', projection = ccrs.Robinson(),
+              grayMask = False):
+    
+    if n is None:
+        ax = plt.subplot(projection = projection)
+    else:
+        ax = plt.subplot(N, M, n, projection = projection)
 
-
-def plot_cube(cube, N, M, n, cmap, levels, extend, projection = ccrs.Robinson()):
-    ax = plt.subplot(N, M, n, projection = projection)
     ax.set_title(cube.long_name)
 
     cmap = plt.get_cmap(cmap)
@@ -28,7 +37,11 @@ def plot_cube(cube, N, M, n, cmap, levels, extend, projection = ccrs.Robinson())
     else:
         norm = BoundaryNorm(levels, ncolors=cmap.N)
     
-    cf = iplt.contourf(cube, levels = levels, cmap = cmap, norm = norm, extend = extend) 
+    if grayMask: plt.gca().patch.set_color('.25')
+    try:
+        cf = iplt.contourf(cube, levels = levels, cmap = cmap, norm = norm, extend = extend) 
+    except:
+        cf = iplt.contourf(cube, levels = levels, cmap = cmap, extend = extend) 
     #if (n == 5): browser()
     plt.gca().coastlines()
     return cf
