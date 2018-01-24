@@ -14,17 +14,16 @@ import math
 
 from   libs              import git_info
 
-def plot_lonely_cube(cube, *args, **kw):
-    cf = plot_cube(cube, None,  None, None, *args, **kw)
-    colorbar = plt.colorbar(cf, colorbar_axes, orientation='horizontal')
-    colorbar_axes = plt.gcf().add_axes([0.15, 0.7, 0.15])
+def plot_lonely_cube(cube, N = None, M = None, n = None, *args, **kw):
+    cf = plot_cube(cube, N,  M, n, *args, **kw)
+    colorbar = plt.colorbar(cf, orientation='horizontal')
     return cf
 
 def plot_cube(cube, N, M, n, cmap, levels, extend = 'neither', projection = ccrs.Robinson(),
               grayMask = False):
     
     if n is None:
-        ax = plt.subplot(projection = projection)
+        ax = plt.axes(projection = projection)
     else:
         ax = plt.subplot(N, M, n, projection = projection)
 
