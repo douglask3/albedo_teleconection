@@ -14,9 +14,9 @@ import math
 
 from   libs              import git_info
 
-def plot_lonely_cube(cube, N = None, M = None, n = None, *args, **kw):
+def plot_lonely_cube(cube, N = None, M = None, n = None, colourbar = True, *args, **kw):
     cf = plot_cube(cube, N,  M, n, *args, **kw)
-    colorbar = plt.colorbar(cf, orientation='horizontal')
+    if colourbar: plt.colorbar(cf, orientation='horizontal')
     return cf
 
 def plot_cube(cube, N, M, n, cmap, levels, extend = 'neither', projection = ccrs.Robinson(),
