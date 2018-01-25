@@ -11,18 +11,16 @@ def grid_area(cube):
     if cube.coord('latitude').bounds is None:
         cube.coord('latitude').guess_bounds()
         cube.coord('longitude').guess_bounds()
-    grid_areas = iris.analysis.cartography.area_weights(cube)    
-    #grid_areas[cube.data.mask] = 0.0
-    return grid_areas
+    return iris.analysis.cartography.area_weights(cube)    
 
 ### Running mean/Moving average
 def running_N_mean(l, N):
     sum = 0
     result = list( 0 for x in l)
-    
+
     for i in range( 0, N ):
         sum = sum + l[i]
-        result[i] = float('nan')#sum / (i+1)
+        result[i] = sum / (i+1)
 
     for i in range( N, len(l) ):
         sum = sum - l[i-N] + l[i]
@@ -30,29 +28,28 @@ def running_N_mean(l, N):
 
     return result
 
-def cube_TS(cube, running_mean = False):
-    grid_areas = grid_area(cube) 
-    #cube = cube.collapsed(['latitude', 'longitude'], iris.analysis.MEAN, weights = grid_areas)
-    
-    cube = cube.collapsed(['longitude'], iris.analysis.MEAN).\
-                collapsed(['latitude' ], iris.analysis.MEAN, weights = grid_areas[:,:,0])
+def cube_TS(cube, running_mean = False, mean = False):
+    cube.data =  np.ma.masked_invalid(cube.data)
+
+    grid_areas = grid_area(cube)
+    collapseFun = iris.analysis.MEAN if mean else iris.analysis.SUM
+    cube = cube.collapsed(['latitude', 'longitude'], collapseFun, weights = grid_areas)
     
     if (running_mean): cube.data = running_N_mean(cube.data, 12)
     return cube   
 
-def plot_cube_TS(cubes, running_mean, xticksLabs = None, ylabel = '', ylim = None):    
-    cubes = [cube_TS(cube, running_mean) for cube in cubes]    
+def plot_cube_TS(cubes, running_mean = False, mean = True, units = None):    
+    cubes = [cube_TS(cube, running_mean, mean) for cube in cubes]    
     
-    for cube in cubes:
-        label = cube.name() if cube.var_name is None else cube.var_name
-        plt.plot(cubes[0].data)
+    for cube in cubes: iplt.plot(cube, label = cube.name())
     
-    tickMarks = range(0, len(cube.data), len(cube.data) / len(xticksLabs))
-    plt.xticks(tickMarks, xticksLabs)
-    if len(cube.data) == 12: plt.xlim([0,11])
-    plt.ylabel(ylabel)
-    plt.legend(ncol = 2, loc = 0)
+    if units is None: units = [cubes[0].units if mean else '']
+    
+    ncol = min(4 * int(len(cubes)**0.5), len(cubes))
+    plt.legend(loc = 'upper center', bbox_to_anchor = (0.5, -0.05),
+               fancybox = True, shadow = True, ncol = ncol)
+
     plt.grid(True)    
     plt.axis('tight')
-    if ylim is not None: plt.gca().set_ylim([-0.25,0.05])
-    plt.gca().set_ylabel(cubes[0].units, fontsize=16)
+    
+    plt.gca().set_ylabel(units, fontsize=16)
