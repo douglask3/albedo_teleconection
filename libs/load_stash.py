@@ -38,7 +38,8 @@ def load_stash(files, code, name = None, units = None):
     try:
         cube = iris.load_cube(files, stash_constraint)
     except:
-        cube = iris.load_cube(files, stash_constraint)[0]
+        cube = iris.load(files, stash_constraint)[0]
+            
 
     if name  is not None: cube.var_name = name
     cube.standard_name = None
