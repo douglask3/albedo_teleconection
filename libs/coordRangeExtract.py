@@ -1,3 +1,9 @@
+import libs.import_iris
+import iris
+import iris.coords
+import iris.coord_categorisation
+
+
 class coordRangeExtract(object):
     def __init__(self, dat, lon = None, lat = None, point = None, point_as_ij = False):
         def coordRange2List(c, r):

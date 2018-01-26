@@ -50,7 +50,6 @@ def plot_cube_TS(cubes, addChange = True, running_mean = False, mean = True, uni
     plt.legend(loc = 'upper right', bbox_to_anchor = (0.5, -0.05),
                fancybox = True, shadow = True, ncol = ncol)
 
-    
     if addChange is None or addChange:
         dcubes = [cubes[0] - cube for cube in cubes[1:]] 
         if addChange: ax2 = plt.gca().twinx()
