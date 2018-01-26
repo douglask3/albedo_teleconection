@@ -1,0 +1,6 @@
+##dirs
+data/*
+
+## temp and generated files
+*.pyc
+*.swp
