@@ -43,3 +43,6 @@ class coordRangeExtract(object):
             pass
         self.dat = dat
 
+
+def coordRangeExtractCubes(cubes, *args, **kw):
+    return [coordRangeExtract(cube, *args, **kw).dat for cube in cubes]

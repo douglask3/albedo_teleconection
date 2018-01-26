@@ -40,24 +40,28 @@ def cube_TS(cube, running_mean = False, mean = False):
 
 def plot_cube_TS(cubes, addChange = True, running_mean = False, mean = True, units = None):   
     
-    cubes = [cube_TS(cube, running_mean, mean) for cube in cubes] 
+    if units is None: units = [cubes[0].units if mean else '']
+    ncol = min(4 * int(len(cubes)**0.5), len(cubes))
     
+    cubes = [cube_TS(cube, running_mean, mean) for cube in cubes] 
     for cube in cubes: iplt.plot(cube, label = cube.name())
     
-    if units is None: units = [cubes[0].units if mean else '']
-
-    if addChange:
-        dcubes = cubes[1].copy() - cubes[1:].copy()
-        ax2 = plt.gca().twinx()
-        iplt.plot(cube, label = 'difference')
-    
-    ncol = min(4 * int(len(cubes)**0.5), len(cubes))
-    plt.legend(loc = 'upper center', bbox_to_anchor = (0.5, -0.05),
+    plt.gca().set_ylabel(units, fontsize=16)
+    plt.legend(loc = 'upper right', bbox_to_anchor = (0.5, -0.05),
                fancybox = True, shadow = True, ncol = ncol)
 
     
+    if addChange is None or addChange:
+        dcubes = [cubes[0] - cube for cube in cubes[1:]] 
+        if addChange: ax2 = plt.gca().twinx()
+        for cube in dcubes: iplt.plot(cube, 'r', label = 'difference')  
+
+        plt.legend(loc = 'upper left', bbox_to_anchor = (0.5, -0.05),
+                   fancybox = True, shadow = True, ncol = ncol)
 
     plt.grid(True)    
     plt.axis('tight')
     
     plt.gca().set_ylabel(units, fontsize=16)
+
+
