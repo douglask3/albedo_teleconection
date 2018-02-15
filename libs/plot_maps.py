@@ -48,7 +48,7 @@ def plot_cube(cube, N, M, n, cmap, levels, extend = 'neither', projection = ccrs
     if extend == "min" or extend == "both": levelsi = [-9E9] + levelsi
 
     if extend == "max" or extend == "min":
-        norm = BoundaryNorm(levelsi, ncolors=cmap.N - 1)
+        norm = BoundaryNorm(levelsi, ncolors=cmap.N)
     else:
         norm = BoundaryNorm(levelsi, ncolors=cmap.N)
     
