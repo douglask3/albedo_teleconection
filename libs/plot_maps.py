@@ -21,7 +21,7 @@ def plot_lonely_cube(cube, N = None, M = None, n = None, levels = [0], extend = 
     if colourbar: 
 
         addColorbar(cf, levels, extend = extend)
-    plt.tight_layout(h_pad=1)
+    plt.tight_layout()
     return cf
     
 def addColorbar(cf, ticks, *args, **kw):
@@ -97,17 +97,17 @@ def plot_cubes_map(cubes, nms, cmap, levels, extend = 'neither',
         cf = plot_cube(cubes[i], nx, ny, i + 1, cmapi, levels, extend, *args, **kw)
 
     colorbar_axes = plt.gcf().add_axes([0.15, cbar_yoff + 0.5 / nx, 0.7, 0.15 / nx])
-    addColorbar(cf, levels, colorbar_axes, extend = extend)
-    colorbar.set_label(units)
-    
-    git = 'rev:  ' + git_info.rev + '\n' + 'repo: ' + git_info.url
-    plt.gcf().text(.05, .95, git, rotation = 270, verticalalignment = "top")
-    
+    cb = addColorbar(cf, levels, colorbar_axes, extend = extend)
+    cb.set_label(units)
+
+    plt.tight_layout()
     if (figName is not None):
         if figName == 'show':
             plt.show()
         else :
             print(figName)
+            git = 'rev:  ' + git_info.rev + '\n' + 'repo: ' + git_info.url
+            plt.gcf().text(.05, .95, git, rotation = 270, verticalalignment = "top")
             plt.savefig(figName, bbox_inches='tight')
             plt.clf()
 
