@@ -35,7 +35,9 @@ def cube_TS(cube, running_mean = False, mean = False):
     collapseFun = iris.analysis.MEAN if mean else iris.analysis.SUM
     cube = cube.collapsed(['latitude', 'longitude'], collapseFun, weights = grid_areas)
     
-    if (running_mean): cube.data = running_N_mean(cube.data, 12)
+    if (running_mean):
+        cube.data = running_N_mean(cube.data, 12)
+        cube = cube[11:]
     return cube   
 
 def plot_cube_TS(cubes, addChange = True, running_mean = False, mean = True, units = None):   
@@ -50,6 +52,7 @@ def plot_cube_TS(cubes, addChange = True, running_mean = False, mean = True, uni
     plt.legend(loc = 'upper right', bbox_to_anchor = (0.5, -0.05),
                fancybox = True, shadow = True, ncol = ncol)
 
+    
     if addChange is None or addChange:
         dcubes = [cubes[0] - cube for cube in cubes[1:]] 
         if addChange: ax2 = plt.gca().twinx()
